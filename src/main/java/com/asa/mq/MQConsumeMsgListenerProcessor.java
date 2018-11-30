@@ -6,6 +6,7 @@ import com.alibaba.rocketmq.client.consumer.listener.MessageListenerConcurrently
 import com.alibaba.rocketmq.common.message.MessageExt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -19,6 +20,11 @@ public class MQConsumeMsgListenerProcessor implements MessageListenerConcurrentl
 
     private static final Logger logger = LoggerFactory.getLogger(MQConsumeMsgListenerProcessor.class);
 
+    @Value("${rocketmq.consumer.topics}")
+    private String topics;
+
+    private String tag = "del";
+
     @Override
     public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
         logger.info("开始消费消息.....");
@@ -30,8 +36,8 @@ public class MQConsumeMsgListenerProcessor implements MessageListenerConcurrentl
         String msg = new String(messageExt.getBody());
         //logger.info("接收到的消息是："+messageExt.toString());
         logger.info("接收到的消息是："+msg);
-        if(messageExt.getTopic().equals("demo")){
-            if(messageExt.getTags().equals("DemoTag")){
+        if(messageExt.getTopic().equals(topics)){
+            if(messageExt.getTags().equals(tag)){
                 int reconsumeTimes = messageExt.getReconsumeTimes();
                 if(reconsumeTimes == 3){
                     return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;

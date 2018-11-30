@@ -27,12 +27,17 @@ public class MqApplicationTests {
 //	@Autowired
 //	private DefaultMQPullConsumer defaultMQPullConsumer;
 
+    private String topic = "sa_order";
+
+    private String tag = "del";
+
 	@Test
 	public void send() throws MQClientException, RemotingException, MQBrokerException, InterruptedException{
-		String msg = "demo";
+		String msg = "demo1231231";
 		logger.info("开始发送消息："+msg);
-		Message sendMsg = new Message("demo","DemoTag",msg.getBytes());
-        sendMsg.setDelayTimeLevel(3);
+		Message sendMsg = new Message(topic, tag, msg.getBytes());
+        // 延迟发送
+		//        sendMsg.setDelayTimeLevel(3);
 		//默认3秒超时
 		SendResult sendResult = defaultMQProducer.send(sendMsg);
 		logger.info("消息发送响应信息："+sendResult.toString());
@@ -43,7 +48,7 @@ public class MqApplicationTests {
 //
 //        System.out.println(messageQueueSet);
 
-		Thread.sleep(10000);
+//		Thread.sleep(10000);
 	}
 
 //	@Test
